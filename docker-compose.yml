@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: mmo3dnewdream
+      MYSQL_DATABASE: ageofgenesis
     ports:
       - "3306:3306"
     volumes:
@@ -29,7 +29,7 @@ services:
     environment:
       APP_ENV: local
       APP_PORT: 8080
-      MYSQL_DSN: root:root@tcp(mysql:3306)/mmo3dnewdream?parseTime=true&charset=utf8mb4&loc=Local
+      MYSQL_DSN: root:root@tcp(mysql:3306)/ageofgenesis?parseTime=true&charset=utf8mb4&loc=Local
       JWT_SECRET: change_me
       PAGSEGURO_BASE_URL: https://sandbox.api.pagseguro.com
       PAGSEGURO_TOKEN: Bearer YOUR_PAGSEGURO_TOKEN
