@@ -1,0 +1,40 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: mmo2d_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mmo3dnewdream
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mmo2d_api
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      APP_ENV: local
+      APP_PORT: 8080
+      MYSQL_DSN: root:root@tcp(mysql:3306)/mmo3dnewdream?parseTime=true&charset=utf8mb4&loc=Local
+      JWT_SECRET: change_me
+      PAGSEGURO_BASE_URL: https://sandbox.api.pagseguro.com
+      PAGSEGURO_TOKEN: Bearer YOUR_PAGSEGURO_TOKEN
+    ports:
+      - "8080:8080"
+
+volumes:
+  mysql_data:

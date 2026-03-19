@@ -17,6 +17,7 @@ The API implements a backend slice focused on:
 - MySQL
 - JWT
 - PagSeguro integration
+- Docker / Docker Compose
 
 ## Architecture and Patterns
 
@@ -88,6 +89,48 @@ go run ./cmd/api
 ```
 
 Default server: `http://localhost:8080`
+
+## Running with Docker Compose
+
+This project includes full containerization for local execution with API + MySQL.
+
+### Included files
+
+- `Dockerfile`
+- `docker-compose.yml`
+- `.dockerignore`
+
+### Start services
+
+```bash
+docker compose up -d --build
+```
+
+### View logs
+
+```bash
+docker compose logs -f api
+docker compose logs -f mysql
+```
+
+### Stop services
+
+```bash
+docker compose down
+```
+
+### Reset database volume (clean state)
+
+```bash
+docker compose down -v
+```
+
+Notes:
+
+- API runs at `http://localhost:8080`.
+- MySQL runs at `localhost:3306`.
+- Migration script in `migrations/001_init.sql` is mounted into `/docker-entrypoint-initdb.d` and executes automatically on first database initialization.
+- The API container currently uses environment variables defined directly in `docker-compose.yml` for a reproducible recruiter setup.
 
 ## Endpoints
 

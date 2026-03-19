@@ -1,0 +1,10 @@
+.git
+.gitignore
+.cursor
+tmp
+bin
+dist
+vendor
+*.log
+.env
+README*
