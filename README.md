@@ -1,44 +1,93 @@
-# MMO3D New Dream API (Go)
+# MMO3D Age of Genesis (Go)
 
-Projeto em Go para avaliação técnica, com recorte dos módulos:
+This repository is **only a technical showcase** of the real project [Age of Genesis](https://ageofgenesis.online/), created exclusively for recruiters to evaluate my code organization, architectural decisions, and implementation quality.
 
-- Login (email ou login).
-- Pagamento via PagSeguro (cartao de credito).
+## Objective
 
-## Arquitetura
+The API implements a backend slice focused on:
 
-- `internal/domain`: entidades e contratos.
-- `internal/application`: casos de uso.
-- `internal/infrastructure`: MySQL, JWT e cliente PagSeguro.
-- `internal/interfaces/http`: handlers e rotas HTTP.
+- user authentication (login via username or email);
+- credit card payments through integration with a payment gateway;
+- persistence of essential data for authentication and payment flows.
 
-Foi aplicada separacao por camadas para facilitar manutencao, testes e evolucao (SOLID/DDD).
+## Stack
 
-## Requisitos
+- Go
+- Gin (HTTP)
+- MySQL
+- JWT
+- PagSeguro integration
 
-- Go 1.22+
+## Architecture and Patterns
+
+The project follows a layered architecture, focusing on tactical DDD and SOLID principles:
+
+- `cmd/api`: application entry point;
+- `internal/domain`: domain entities and contracts;
+- `internal/application`: use cases and application rules;
+- `internal/infrastructure`: technical implementations (DB, JWT, external gateway);
+- `internal/interfaces/http`: HTTP handlers and route configuration.
+
+### Design Decisions
+
+- **DIP (Dependency Inversion)**: use cases depend on interfaces (`Gateway`, `UserRepository`, `TokenService`, `TransactionRepository`).
+- **SRP (Single Responsibility)**: payment models were split into separate files to ease evolution and maintenance.
+- **Strategy**: gateway status mapping was isolated in `StatusMapper`, avoiding embedded logic in the main flow.
+- **Testability**: application services are tested using stubs, without direct coupling to infrastructure.
+
+## Current Features
+
+### 1) Login
+
+Flow:
+1. Find user by username/email.
+2. Validate password using bcrypt.
+3. Block banned users.
+4. Update last IP.
+5. Generate JWT.
+
+### 2) Credit Card Payment
+
+Flow:
+1. Receive payment data.
+2. Build payment request for the gateway.
+3. Send to PagSeguro.
+4. Handle response and status.
+5. Persist transaction by `reference_id` (upsert).
+
+## Prerequisites
+
+- Go 1.22+ (or compatible version)
 - MySQL 8+
 
-## Configuracao
+## Configuration
 
-1. Copie o `.env.example` para `.env` (ja existe um modelo no projeto).
-2. Ajuste as variaveis:
-   - `MYSQL_DSN`
-   - `JWT_SECRET`
-   - `PAGSEGURO_TOKEN`
+1. Copy `.env.example` to `.env`.
+2. Set the variables:
+   - `APP_ENV` (optional, default: `local`)
+   - `APP_PORT` (optional, default: `8080`)
+   - `MYSQL_DSN` (**required**)
+   - `JWT_SECRET` (**required**)
+   - `PAGSEGURO_BASE_URL` (optional, default: sandbox)
+   - `PAGSEGURO_TOKEN` (**required**)
 
-## Banco de dados
+## Database
 
-Execute o SQL em `migrations/001_init.sql`.
+Run the initial migration:
 
-## Rodar localmente
+```bash
+# adjust according to your environment
+# file: migrations/001_init.sql
+```
+
+## How to Run
 
 ```bash
 go mod tidy
 go run ./cmd/api
 ```
 
-Servidor por padrao em `http://localhost:8080`.
+Default server: `http://localhost:8080`
 
 ## Endpoints
 
@@ -46,7 +95,7 @@ Servidor por padrao em `http://localhost:8080`.
 - `POST /api/login`
 - `POST /api/payments/credit-card`
 
-### Exemplo de login
+### Example: `POST /api/login`
 
 ```json
 {
@@ -55,7 +104,7 @@ Servidor por padrao em `http://localhost:8080`.
 }
 ```
 
-### Exemplo de pagamento cartao
+### Example: `POST /api/payments/credit-card`
 
 ```json
 {
@@ -84,3 +133,17 @@ Servidor por padrao em `http://localhost:8080`.
 ```bash
 go test ./...
 ```
+
+## Limitations of This Scope
+
+- Does not represent the full complexity of the production project.
+- Does not include all game/platform modules.
+- Designed to demonstrate good engineering practices within a focused scope.
+
+## Note for Recruiters
+
+If needed, I can elaborate in an interview on:
+
+- architectural trade-offs;
+- domain modeling decisions;
+- testing strategy and incremental evolution.
