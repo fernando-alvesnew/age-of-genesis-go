@@ -10,6 +10,20 @@ The API implements a backend slice focused on:
 - credit card payments through integration with a payment gateway;
 - persistence of essential data for authentication and payment flows.
 
+## Limitations of This Scope
+
+- Does not represent the full complexity of the production project.
+- Does not include all game/platform modules.
+- Designed to demonstrate good engineering practices within a focused scope.
+
+## Note for Recruiters
+
+If needed, I can elaborate in an interview on:
+
+- architectural trade-offs;
+- domain modeling decisions;
+- testing strategy and incremental evolution.
+
 ## Stack
 
 - Go
@@ -177,16 +191,4 @@ Notes:
 go test ./...
 ```
 
-## Limitations of This Scope
 
-- Does not represent the full complexity of the production project.
-- Does not include all game/platform modules.
-- Designed to demonstrate good engineering practices within a focused scope.
-
-## Note for Recruiters
-
-If needed, I can elaborate in an interview on:
-
-- architectural trade-offs;
-- domain modeling decisions;
-- testing strategy and incremental evolution.
